@@ -1,12 +1,11 @@
-package com.tj.edu.practice2.validation;
-
+package com.tj.edu.practice3.spring_exception;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ValidationTestApplication {
+public class SpringExceptionApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ValidationTestApplication.class, args);
+        SpringApplication.run(SpringExceptionApplication.class, args);
     }
 }

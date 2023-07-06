@@ -1,7 +1,6 @@
 package com.tj.edu.practice2.spring_ioc_practice;
 
 import org.springframework.stereotype.Component;
-import com.tj.edu.practice2.spring_ioc_practice.IEncoder;
 
 import java.net.URLEncoder;
 
