@@ -1,6 +1,7 @@
 package com.tj.edu.practice5.jpa.repository;
 
 import com.tj.edu.practice5.jpa.model.Member;
+import com.tj.edu.practice5.jpa.model.enums.Nation;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,7 +47,9 @@ class MemberRepositoryTest {
 
         // update문
         System.out.println("update문 --------------------------------------------------------");
-        Member member1 = new Member(1L, "홍길동", "이메일 주소", LocalDateTime.now(), LocalDateTime.now());
+//        Member member1 = new Member(1L, "홍길동", "이메일 주소", LocalDateTime.now(), LocalDateTime.now(), null, null);
+        Member member1 = Member.builder()
+                        .id(1L).name("홍길동").email("이메일 주소").createAt(LocalDateTime.now()).updateAt(LocalDateTime.now()).build();
         memberRepository.save(member1);     // 1번을 가진 id가 있다면 update, 없으면 create문 발생
         List<Member> memberList3 = memberRepository.findAll();
         memberList3.forEach(System.out::println);
@@ -153,5 +156,35 @@ class MemberRepositoryTest {
         );
 
         memberRepository.findAll(memberExample).forEach((System.out::println));
+    }
+
+    @Test
+    void jpaSchemaTest() throws InterruptedException {
+//        Member member = Member.builder()
+//                .name("이미라")
+//                .male(false)
+//                .email("imila@naver.com")
+//                .createAt(LocalDateTime.now())
+//                .updateAt(LocalDateTime.now())
+//                .build();
+//        member = memberRepository.saveAndFlush(member); // insert
+//
+//        Thread.sleep(100);
+//        member.setName("김홍순");
+//        member.setUpdateAt(LocalDateTime.now());
+//        memberRepository.saveAndFlush(member);          // update
+    }
+
+    @Test
+    void jpaEnumTest(){
+        Member member = Member.builder()
+                .name("이미라")
+                .male(false)
+                .email("imila@naver.com")
+                .createAt(LocalDateTime.now())
+                .updateAt(LocalDateTime.now())
+                .nation(Nation.JAPAN)
+                .build();
+        memberRepository.saveAndFlush(member);
     }
 }
