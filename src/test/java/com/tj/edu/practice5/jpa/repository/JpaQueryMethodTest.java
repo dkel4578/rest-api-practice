@@ -32,9 +32,6 @@ public class JpaQueryMethodTest {
 //        memberHongildongList.forEach(System.out::println);
         System.out.println(memberHongildongList);
 
-        Optional<Member> memberOpt1 = memberRepository.findByCreateAt(LocalDateTime.MAX);
-        System.out.println(memberOpt1);
-
         System.out.println("findByName: " + memberRepository.findByName("이순신"));
         System.out.println("queryByName: " + memberRepository.queryByName("이순신"));
         System.out.println("searchByName: " + memberRepository.searchByName("이순신"));
@@ -105,9 +102,9 @@ public class JpaQueryMethodTest {
 //
 //        List<Member> memberList13 = memberRepository.findByAddressIsEmpty();
 //        memberList13.forEach(s -> System.out.println(s));
-
-        Page<Member> pageMember = memberRepository.findByEmailEndingWith(".com", PageRequest.of(0, 3, Sort.by(Sort.Order.desc("id"))));
-        List<Member> memberList13 = pageMember.getContent();
-        memberList13.forEach(System.out::println);
+//
+//        Page<Member> pageMember = memberRepository.findByEmailEndingWith(".com", PageRequest.of(0, 3, Sort.by(Sort.Order.desc("id"))));
+//        List<Member> memberList13 = pageMember.getContent();
+//        memberList13.forEach(System.out::println);
     }
 }

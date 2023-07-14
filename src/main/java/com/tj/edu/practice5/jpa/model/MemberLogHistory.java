@@ -7,7 +7,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Builder
 @NoArgsConstructor
@@ -15,13 +14,15 @@ import java.util.Optional;
 @Data
 @ToString
 @Entity
-public class Address extends BaseEntity {
+public class MemberLogHistory extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false)
+    private String email;
+    private String name;
+
+    @ManyToOne
     private Member member;
 
-    private String zipcode;
 }
