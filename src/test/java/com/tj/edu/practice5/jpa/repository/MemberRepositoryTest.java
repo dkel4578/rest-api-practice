@@ -1,6 +1,7 @@
 package com.tj.edu.practice5.jpa.repository;
 
 import com.tj.edu.practice5.jpa.model.Member;
+import com.tj.edu.practice5.jpa.model.MemberLogHistory;
 import com.tj.edu.practice5.jpa.model.enums.Nation;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -9,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 
-import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.endsWith;
+import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.startsWith;
 
 
 @SpringBootTest
@@ -22,6 +23,9 @@ class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private MemberLogHistoryRepository memberLogHistoryRepository;
 
     @Test
     void crud() {
@@ -47,115 +51,112 @@ class MemberRepositoryTest {
 
         // update문
         System.out.println("update문 --------------------------------------------------------");
-//        Member member1 = new Member(1L, "홍길동", "이메일 주소", LocalDateTime.now(), LocalDateTime.now(), null, null);
+//        Member member1 = new Member(1L, "홍길동", "이메일 주소" , LocalDateTime.now(), LocalDateTime.now(), null, null);
         Member member1 = Member.builder()
-                        .id(1L).name("홍길동").email("이메일 주소").createAt(LocalDateTime.now()).updateAt(LocalDateTime.now()).build();
+                .id(1L)
+                .name("홍길동")
+                .email("이메일 주소")
+//                .createAt(LocalDateTime.now())
+//                .updateAt(LocalDateTime.now())
+                .build();
         memberRepository.save(member1);     // 1번을 가진 id가 있다면 update, 없으면 create문 발생
         List<Member> memberList3 = memberRepository.findAll();
         memberList3.forEach(System.out::println);
 
         // delete문
 //        System.out.println("delete문 --------------------------------------------------------");
-////        memberRepository.deleteAll(); //하나씩 삭제해서 느림
-//        memberRepository.deleteAllInBatch(); // 한번에 삭제
+//        memberRepository.deleteAll();
+//        memberRepository.deleteAllInBatch();
 //        List<Member> memberList4 = memberRepository.findAll();
 //        memberList4.forEach(System.out::println);
     }
 
     @Test
-    void crud2(){
-        //create 문
-//        Member member = Member.builder()
-//                .name("이명박")
+    void crud2() {
+        // insert문(name과 create_at컬럼이 null이 아닌 insert)
+        Member member = Member.builder()
+                .id(8L)
+                .name("이명박")
 //                .createAt(LocalDateTime.now())
-//                .build();
-//        memberRepository.save(member);
+                .build();
+        memberRepository.save(member);
 //
-//        // create 문 (update_at 컬럼이 null이 아닌 insert)
-//        Member member2 = Member.builder()
-//                .name("강정수")
+//        // insert문(update_at컬럼이 null이 아닌 insert)
+        Member member2 = Member.builder()
 //                .updateAt(LocalDateTime.now())
-//                .build();
-//        memberRepository.save(member2);
-//
-//        // create 문(id : 15, name : 박조은, email : parkjoeun@gmail.com, create_at : 현재시간)
+                .id(9L)
+                .build();
+        memberRepository.save(member2);
+
+        // insert문(name: 박조은, email: parkjoeun@gmail.com, create_at: 현재시간)
+//        Member member3 = new Member(15L, "박조은", "parkjoeun@gmail.com", LocalDateTime.now(), null, null, null);
         Member member3 = Member.builder()
                 .id(15L)
                 .name("박조은")
                 .email("parkjoeun@gmail.com")
-                .createAt(LocalDateTime.now())
+//                .createAt(LocalDateTime.now())
                 .build();
         memberRepository.save(member3);
 
-        //select 문 (by)
-        Optional<Member> memberOptional = memberRepository.findById(1L);
-        System.out.println(memberOptional);
-//        Member member = memberRepository.findById(1L).orElse(null);
-//        if(member != null){
-//            System.out.println(member);
-//        }
-
-        //id: 7, 3 을 가진 행값을 가져오는 select 문을 만들어주는 java jap 코드 작성 (findAll)
-        List<Member> memberList4 = memberRepository.findAllById(Lists.newArrayList(3L, 7L));
-        memberList4.forEach(System.out::println);
-
-        //select count 함수
-        System.out.println("회원 수는 " + memberRepository.count()+"명 입니다.");
-
-        //select exist 함수
-        if(memberRepository.existsById(5L)){
-            System.out.println("5번 회원은 존재합니다.");
-        } else{
-            System.out.println("5번 회원은 존재하지 않습니다.");
+        // select(by)
+//        Optional<Member> memberOptional = memberRepository.findById(10L);
+//        memberOptional.orElseThrow(RuntimeException::new);
+//        System.out.println(memberOptional);
+        Member member4 = memberRepository.findById(1L).orElse(null);
+        if (member != null) {
+            System.out.println(member4);
         }
 
-        if(memberRepository.existsById(90L)){
-            System.out.println("90번 회원은 존재합니다.");
-        } else{
-            System.out.println("90번 회원은 존재하지 않습니다.");
-        }
+        // id: 7, 3을 가진 행값을 가져오는 select문을 만들어주는 java jpa코드 작성(finaAllbyId)
+        List<Member> listMember = memberRepository.findAllById(Lists.newArrayList(7L,3L));
+        listMember.forEach(System.out::println);
 
-        //select page 함수
+        // select count함수
+        System.out.println("회원 수는 " + memberRepository.count() + "입니다");
+
+        // select exist함수
+        boolean isFiveNumberMember = memberRepository.existsById(5L);
+        if (isFiveNumberMember)
+            System.out.println("5번 회원 존재");
+        boolean isNinetyNumberMember = memberRepository.existsById(90L);
+        if (isNinetyNumberMember)
+            System.out.println("90번 회원 존재");
+
+        // select page함수
         Page<Member> membersPage = memberRepository.findAll(PageRequest.of(0, 4));
-        System.out.println(membersPage);
-
+        System.out.println("page: " + membersPage);
         System.out.println("totalElements: " + membersPage.getTotalElements());
-        System.out.println("totalPages: " + membersPage.getTotalPages());
-        System.out.println("numberOfElement: " + membersPage.getNumberOfElements());
+        System.out.println("totalPage: " + membersPage.getTotalPages());
+        System.out.println("numberOfElements: " + membersPage.getNumberOfElements());
         System.out.println("sort: " + membersPage.getSort());
         System.out.println("size: " + membersPage.getSize());
 
         List<Member> memberList2 = membersPage.getContent();
         memberList2.forEach(System.out::println);
 
-        // jpa find example 이용 (select)
+        // jpa find example이용(select)
         ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnorePaths("name")
-                .withMatcher("email", endsWith());
+//                .withIgnorePaths("name")
+//                .withMatcher("email", startsWith())
+                ;
         Example<Member> memberExample = Example.of(
-                Member.builder().name("박남순").email("@thejoeun.com").build(),
+                Member.builder()
+//                        .id(2L)
+                        .name("홍길동")
+//                        .email("ryukwansun@thejoeun.com")
+                        .build(),
                 matcher
         );
-        memberRepository.findAll(memberExample).forEach(System.out::println);
+//        memberRepository.findAll(memberExample).forEach(System.out::println);
 
         Example<Member> memberExample2 = Example.of(Member.builder().email("mars@thejoeun.com").build());
         memberRepository.findAll(memberExample2).forEach(System.out::println);
+    }
 
-
-
-        }
-    @DisplayName("semiProject jpa 자바코드 변환 테스트")
+    @DisplayName("semiProject sqlmapper관련 xml sql코드를 jpa 자바코드로 변환 테스트")
     @Test()
-    void crudSemiSqlMapper(){
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withMatcher("name", endsWith());
-        Example<Member> memberExample = Example.of(
-                Member.builder()
-                        .name("신")
-                        .build(), matcher
-        );
+    void crudSemiSqlMapper() {
 
-        memberRepository.findAll(memberExample).forEach((System.out::println));
     }
 
     @Test
@@ -165,26 +166,64 @@ class MemberRepositoryTest {
 //                .male(false)
 //                .email("imila@naver.com")
 //                .createAt(LocalDateTime.now())
-//                .updateAt(LocalDateTime.now())
+////                .updateAt(LocalDateTime.now())
 //                .build();
 //        member = memberRepository.saveAndFlush(member); // insert
 //
-//        Thread.sleep(100);
+//        Thread.sleep(500);  // 0.5초 기다린다
+//
 //        member.setName("김홍순");
 //        member.setUpdateAt(LocalDateTime.now());
 //        memberRepository.saveAndFlush(member);          // update
     }
 
     @Test
-    void jpaEnumTest(){
+    void jpaEnumTest() {
         Member member = Member.builder()
                 .name("이미라")
                 .male(false)
                 .email("imila@naver.com")
-                .createAt(LocalDateTime.now())
-                .updateAt(LocalDateTime.now())
+//                .createAt(LocalDateTime.now())
+//                .updateAt(LocalDateTime.now())
                 .nation(Nation.JAPAN)
                 .build();
-        memberRepository.saveAndFlush(member);
+        memberRepository.save(member);
+    }
+
+    @Test
+    void jpaEventListenerTest() {
+        Member member = Member.builder()
+                .name("홍승대")
+                .email("imila@naver.com")
+//                .createAt(LocalDateTime.now())
+//                .updateAt(LocalDateTime.now())
+                .build();
+        memberRepository.save(member);      // insert(PrePersist, PostPersist)
+
+        Member member2 = memberRepository.findById(1L).orElseThrow(RuntimeException::new); // select(PostLoad)
+        member2.setName("이정");
+        memberRepository.save(member2);     // update(PreUpdate, PostUpdate)
+
+        memberRepository.deleteById(3L);    // delete(PreRemove, PostRemove)
+    }
+
+    @Test
+    void getOneToManyTest(){
+        Member member = Member.builder()
+                .name("홍승대")
+                .email("imila@naver.com")
+                .build();
+        memberRepository.save(member);
+        member.setName("이정");
+        memberRepository.save(member);
+
+        List<MemberLogHistory> memberLogHistoryList = memberRepository.findByEmail("imila@naver.com").getMemberLogHistories();
+        memberLogHistoryList.forEach(System.out::println);
+
+//        List<Member> memberList = memberRepository.findAll();
+//        Member member2 = memberList.get(0);
+
+//        List<MemberLogHistory> memberLogHistoryList = member2.getMemberLogHistories();
+//        System.out.println(">>>>>>>>>> memberLogHistoryList : " + memberLogHistoryList);
     }
 }

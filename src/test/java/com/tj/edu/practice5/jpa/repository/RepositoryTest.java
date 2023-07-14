@@ -1,7 +1,7 @@
 package com.tj.edu.practice5.jpa.repository;
 
-import com.tj.edu.practice5.jpa.model.Board;
-import org.assertj.core.util.Lists;
+import com.tj.edu.practice5.jpa.model.Address;
+import com.tj.edu.practice5.jpa.model.Book;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,17 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class RepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
     @Autowired
-    private BoardRepository boardRepository;
+    private BookRepository bookRepository;
+    @Autowired
+    private AddressRepository addressRepository;
 
     @BeforeEach
     void setUp() {
@@ -31,30 +30,35 @@ class RepositoryTest {
 
     }
 
-    @DisplayName("간단한 JPA BoardRepository 테스트")
+    @DisplayName("간단한 JPA MemberRepository 테스트")
     @Test
-    void boardRepositoryTest1() {
-        Board board1 = Board.builder()
-                .boardNo("1")
-                .imgNo("1")
-                .boardKind("질문과 답")
-                .title("뭘까?")
-                .build();
-        boardRepository.save(board1);
+    void memberRepositoryTest1() {
 
-        Board board2 = Board.builder()
-                .boardNo("2")
-                .imgNo("1")
-                .boardKind("질문과 답")
-                .title("뭘까?")
-                .build();
-        boardRepository.save(board2);
-
-        List<Board> boardList = boardRepository.findAllById(Lists.newArrayList("1"));
-        boardList.forEach(System.out::println);
     }
+
+
+    @Test
+    void bookRepositoryTest() throws InterruptedException {
+        Book book = Book.builder()
+                .name("표준orm JPA 프로그래밍")
+                .build();
+        Book book2 = bookRepository.save(book);
+
+        Thread.sleep(1000);
+
+
+        bookRepository.save(book2);
+
+    }
+    @Test
+    void addressRepositoryTest() throws InterruptedException {
+        Address address = Address.builder()
+                .zipcode("101-101")
+                .build();
+        addressRepository.save(address);
+    }
+
     @AfterEach
     void tearDown() {
     }
-
 }
