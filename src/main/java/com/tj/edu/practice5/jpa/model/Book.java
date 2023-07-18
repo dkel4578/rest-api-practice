@@ -2,6 +2,7 @@ package com.tj.edu.practice5.jpa.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Book extends BaseEntity{
     @ManyToOne
     private Publisher publisher;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_id")
     private List<Review> reviews;
 

@@ -21,7 +21,8 @@ public class Publisher extends BaseEntity{
     @Column(nullable = false)
     private String name;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "publisher_id")
+    @ToString.Exclude
     private List<Book> books;
 }
