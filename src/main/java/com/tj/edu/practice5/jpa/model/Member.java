@@ -27,9 +27,9 @@ import java.util.List;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @GeneratedValue
+    @Column(updatable = false)
     private Long id;
-    //    @NonNull
+//    @NonNull
     @Column(nullable = false, columnDefinition = "varchar(5)")
     private String name;
     @Column(columnDefinition = "varchar(100)")
@@ -57,7 +57,7 @@ public class Member extends BaseEntity {
     @ToString.Exclude
     private List<MemberLogHistory> memberLogHistories;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     @ToString.Exclude
     private List<Review> reviews;
