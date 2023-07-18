@@ -6,6 +6,8 @@ application:
   title: thejoeun company
 
 spring:
+  thymeleaf :
+    cache: false
   sql:
     init:
       mode: always
